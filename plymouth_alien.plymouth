@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Alien Theme
+Description=Aliens are coming for our planet
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/plymouth_alien
+ScriptFile=/usr/share/plymouth/themes/plymouth_alien/plymouth_alien.script
