@@ -13,3 +13,9 @@ plymouth-set-default-theme plymouth_alien
 /usr/libexec/plymouth/plymouth-update-initrd
 grub2-mkconfig -o /boot/grub2/grub.cfg 
 </code>
+
+I also changed my /etc/plymouth/plymouthd.conf file to:
+
+[Daemon]
+Theme=plymouth_alien
+ShowDelay=1

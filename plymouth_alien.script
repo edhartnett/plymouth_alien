@@ -1,52 +1,104 @@
 # This is an example plymouth plugin script
 
 # Load the images.
-flower_image = Image("boulder_1.png");
+background_image = Image("boulder_1.png");
 spaceship_image = Image("spaceship.png");
 ray_image = Image("death_ray.png");
+balloon_image_med = Image("balloon1_med.png");
+balloon_image_sm = Image("balloon1_sm.png");
 
-# Create a sprite.
-flower_sprite = Sprite(flower_image);
+# Create sprites.
+background_sprite = Sprite(background_image);
 spaceship_sprite = Sprite(spaceship_image);
 ray_sprite = Sprite(ray_image);
+b1_sprite = Sprite(balloon_image_sm);
+b2_sprite = Sprite(balloon_image_med);
 
-# Add your code here
+# Resize background to file entire screen.
 screen_width = Window.GetWidth();
 screen_height = Window.GetHeight();
-resized_flower_image = flower_image.Scale(screen_width, screen_height);
-flower_sprite.SetImage(resized_flower_image);
+resized_background_image = background_image.Scale(screen_width, screen_height);
+background_sprite.SetImage(resized_background_image);
 
+# Callback loop is called each time the screen refreshes, nominally 50 Hz.
 count = 0;
 sx = 0;
 sy = 0;
 xinc = 1;
 yinc = 1;
+b1_inc = -1;
+b1x = 150;
+b1y = screen_height/2;
+b2_inc = -1;
+b2x = 800;
+b2y = screen_height;
+b1s_inc = 1;
+b2s_inc = -1;
 fun refresh_callback ()
   {
+	# Keep the spaceship on the screen.
   	sx = sx + xinc;
-	if (sx > screen_width) {
+	if (sx > screen_width - 150) {
 	   xinc = -1;
         }
 	if (sx < 0) {
 	   xinc = 1;
         }
-	if (sy > screen_height) {
+	if (sy > screen_height - 150) {
 	   yinc = -1;
         }
 	if (sy < 0) {
 	   yinc = 1;
         }
-	count++;	
+
+	# Move the spaceship.
 	sx = sx + xinc;
 	sy = sy + yinc;
 	spaceship_sprite.SetPosition(sx, sy, 11);
 
-	ray_sprite.SetPosition(sx - 300, sy + 80, 10);
-	if (count > 100 && count < 200) {
+	# Keep balloons on the screen.
+	if (b1y < 0) {
+	   b1_inc = 1;
+        }
+	if (b1y > screen_height) {
+	   b1_inc = -1;
+        }
+	if (b2y < 0) {
+	   b2_inc = 1;
+        }
+	if (b2y > screen_height) {
+	   b2_inc = -1;
+        }
+	if (b1x < 0) {
+	   b1s_inc = 1;
+        }
+	if (b1x > screen_width) {
+	   b1s_inc = -1;
+        }
+	if (b2x < 0) {
+	   b2s_inc = 1;
+        }
+	if (b2x > screen_width) {
+	   b2s_inc = -1;
+        }
+
+	# Move the balloons.
+	b1y = b1y + b1_inc;
+	b1x = b1x + b1s_inc;
+	b2y = b2y + b2_inc;
+	b2x = b2x + b2s_inc;
+	b1_sprite.SetPosition(b1x, b1y, 10);
+	b2_sprite.SetPosition(b2x, b2y, 8);
+
+	# Fire the death ray.
+	ray_sprite.SetPosition(sx - 320, sy + 80, 10);
+	if (sy > 100 && sy < 125 || sy > 400 && sy < 425) {
 		ray_sprite.SetOpacity(1);
 	} else {
 		ray_sprite.SetOpacity(0);
-	}	
+	}
+
+	count++;	
   }
   
 Plymouth.SetRefreshFunction (refresh_callback);
